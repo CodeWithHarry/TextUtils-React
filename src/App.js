@@ -2,7 +2,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import TextForm from './components/TextForm';
 import About from './components/About';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Alert from './components/Alert';
 import {
   BrowserRouter as Router,
@@ -25,15 +25,26 @@ function App() {
       }, 1500);
   }
 
+  useEffect(()=>{
+    const theme = localStorage.getItem('theme');
+
+    if (theme) {
+      setMode(theme);
+      document.body.style.backgroundColor = theme==='light' ? 'white' : '#042743';
+    }
+  }, [])
+
   const toggleMode = ()=>{
     if(mode === 'light'){
       setMode('dark');
       document.body.style.backgroundColor = '#042743';
+      localStorage.setItem('theme', 'dark');
       showAlert("Dark mode has been enabled", "success");
     }
     else{
       setMode('light');
       document.body.style.backgroundColor = 'white';
+      localStorage.setItem('theme', 'light');
       showAlert("Light mode has been enabled", "success");
     }
   }

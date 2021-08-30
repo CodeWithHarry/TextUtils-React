@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 
 
 export default function TextForm(props) {
@@ -40,6 +40,28 @@ export default function TextForm(props) {
     const [text, setText] = useState(''); 
     // text = "new text"; // Wrong way to change the state
     // setText("new text"); // Correct way to change the state
+    
+    // To store the text if the component gets unmounted.
+    useEffect(() => {
+        return () => {
+            localStorage.setItem('text', text);
+        }
+    });
+    
+    // To store the data if the page gets reloaded.
+    window.onbeforeunload = () => {
+        localStorage.setItem('text', text);
+    };
+    
+    // To load data when the component is loaded.
+    useEffect(() => {
+        const oldText = localStorage.getItem('text');
+        if (oldText) {
+            setText(oldText);
+        }
+    }, []);
+
+
     return (
         <>
         <div className="container" style={{color: props.mode==='dark'?'white':'#042743'}}> 
