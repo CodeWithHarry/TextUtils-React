@@ -1,61 +1,142 @@
-import './App.css';
-import Navbar from './components/Navbar';
-import TextForm from './components/TextForm';
-import About from './components/About';
-import React, { useState } from 'react';
-import Alert from './components/Alert';
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  Redirect,
 } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Form from "./components/Form";
+import Alert from "./components/Alert";
+import About from "./components/About";
 
- 
 function App() {
-  const [mode, setMode] = useState('light'); // Whether dark mode is enabled or not
+  // Theme states
+  const [theme, setTheme] = useState(
+    sessionStorage.getItem("theme") == null
+      ? {
+          nav: "#eef3f3",
+          nav_fg: "light",
+          bg: "#ffffff",
+          fg: "black",
+        }
+      : JSON.parse(sessionStorage.theme)
+  );
+
+  // Color state
+  const [color, setColor] = useState(theme.bg);
+
+  // Alert states
   const [alert, setAlert] = useState(null);
 
-  const showAlert = (message, type)=>{
-      setAlert({
-        msg: message,
-        type: type
-      })
-      setTimeout(() => {
-          setAlert(null);
-      }, 1500);
+  // Text states
+  const [text, setText] = useState("");
+
+  // Function to show alerts
+  const showAlert = (type, msg) => {
+    setAlert({ type: type, msg: msg });
+    if (localStorage["timeout"] != null) clearTimeout(localStorage["timeout"]);
+    let s = setTimeout(() => {
+      setAlert(null);
+    }, 2000);
+    localStorage["timeout"] = s;
+  };
+
+  // Function to append style
+  const appendStyle = (themeObj) => {
+    var styleElement = document.getElementById("styles_js");
+    if (!styleElement) {
+      styleElement = document.createElement("style");
+      styleElement.type = "text/css";
+      styleElement.id = "styles_js";
+      document.getElementsByTagName("head")[0].appendChild(styleElement);
+    }
+    styleElement.appendChild(
+      document.createTextNode(
+        `body {background-color: ${themeObj.bg} !important;}`
+      )
+    );
+    styleElement.appendChild(
+      document.createTextNode(`body {color: ${themeObj.fg} !important;}`)
+    );
+    styleElement.appendChild(
+      document.createTextNode(
+        `#navbar {background-color: ${themeObj.nav} !important;}`
+      )
+    );
+    styleElement.appendChild(
+      document.createTextNode(
+        `.btn {color: ${themeObj.fg} !important; border: 1px solid ${themeObj.fg} !important;}`
+      )
+    );
+    styleElement.appendChild(
+      document.createTextNode(
+        `.btn:hover {background-color: ${themeObj.nav} !important; border: 1px solid ${themeObj.nav} !important;}`
+      )
+    );
+  };
+  appendStyle(theme);
+
+  // Function to check darkness of background
+  function checkDark(hexcolor) {
+    hexcolor = hexcolor.replace("#", "");
+    var r = parseInt(hexcolor.substr(0, 2), 16);
+    var g = parseInt(hexcolor.substr(2, 2), 16);
+    var b = parseInt(hexcolor.substr(4, 2), 16);
+    var brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness >= 128 ? "black" : "white";
   }
 
-  const toggleMode = ()=>{
-    if(mode === 'light'){
-      setMode('dark');
-      document.body.style.backgroundColor = '#042743';
-      showAlert("Dark mode has been enabled", "success");
-    }
-    else{
-      setMode('light');
-      document.body.style.backgroundColor = 'white';
-      showAlert("Light mode has been enabled", "success");
-    }
-  }
+  // Function to change theme
+  const changeTheme = (colorInp) => {
+    let textColor = checkDark(colorInp);
+
+    let themeObj = {
+      nav: colorInp,
+      nav_fg: textColor === "white" ? "dark" : "light",
+      bg: colorInp + "e0",
+      fg: textColor,
+    };
+
+    setTheme(themeObj);
+    appendStyle(themeObj);
+    sessionStorage.setItem("theme", JSON.stringify(themeObj));
+  };
+
+  // Function to change color
+  const changeColor = (colorInp) => {
+    setColor(colorInp);
+    changeTheme(colorInp);
+  };
+
   return (
-    <>
     <Router>
-    <Navbar title="TextUtils" mode={mode} toggleMode={toggleMode} key={new Date()} />
-    <Alert alert={alert}/>
-    <div className="container my-3">
-    <Switch>
-    {/* /users --> Component 1
-        /users/home --> Component 2 */}
-          <Route exact path="/about">
-            <About mode={mode} />
-          </Route>
-          <Route exact path="/">
-            <TextForm showAlert={showAlert} heading="Try TextUtils - word counter, character counter, remove extra spaces" mode={mode}/>
-          </Route>
-    </Switch>
-    </div>
+      <Navbar
+        title="TextUtils"
+        theme={theme}
+        toggle={changeTheme}
+        color={color}
+        changeColor={changeColor}
+      />
+      <Alert alert={alert} />
+      <Switch>
+        <Route exact path="/about">
+          <About title="About" />
+        </Route>
+        <Route exact path="/">
+          <Form
+            title="TextUtils"
+            theme={theme}
+            showAlert={showAlert}
+            text={text}
+            setText={setText}
+          />
+        </Route>
+        <Route path="/">
+          <Redirect to="/" />
+        </Route>
+      </Switch>
     </Router>
-    </> 
   );
 }
 
