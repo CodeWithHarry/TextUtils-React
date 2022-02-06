@@ -36,6 +36,14 @@ export default function TextForm(props) {
         setText(newText.join(" "));
         props.showAlert("Extra spaces removed!", "success");
     }
+    const numbersExtractor = ()=>{
+        const removeBegginingSpaces = text.replace(/^ +/g, "");
+        let numbersWithSpaces = removeBegginingSpaces.match(/[0-9/ ]/g);
+        numbersWithSpaces = numbersWithSpaces.join("");
+        const digits = numbersWithSpaces.replace(/\s\s+/g, " ");
+        setText(digits);
+
+    }
 
     const [text, setText] = useState(''); 
     // text = "new text"; // Wrong way to change the state
@@ -52,6 +60,7 @@ export default function TextForm(props) {
             <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handleClearClick}>Clear Text</button>
             <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handleCopy}>Copy Text</button>
             <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handleExtraSpaces}>Remove Extra Spaces</button>
+            <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={numbersExtractor}>Extract The Number</button>
         </div>
         <div className="container my-3" style={{color: props.mode==='dark'?'white':'#042743'}}>
             <h2>Your text summary</h2>
