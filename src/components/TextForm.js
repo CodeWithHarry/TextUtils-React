@@ -29,6 +29,20 @@ export default function TextForm(props) {
         navigator.clipboard.writeText(text); 
         props.showAlert("Copied to Clipboard!", "success");
     }
+    
+    const handleDownload = () => {
+    // file object
+    const file = new Blob([text], { type: "text/plain" });
+
+    // anchor link
+    const element = document.createElement("a");
+    element.href = URL.createObjectURL(file);
+    element.download = "100ideas-" + Date.now() + ".txt";
+
+    // simulate link click
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
 
     // Credits: Coding Wala
     const handleExtraSpaces = () => {
@@ -51,6 +65,7 @@ export default function TextForm(props) {
             <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handleLoClick}>Convert to Lowercase</button>
             <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handleClearClick}>Clear Text</button>
             <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handleCopy}>Copy Text</button>
+            <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handleDownload}>Download Text</button>
             <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handleExtraSpaces}>Remove Extra Spaces</button>
         </div>
         <div className="container my-3" style={{color: props.mode==='dark'?'white':'#042743'}}>
