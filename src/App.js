@@ -37,10 +37,17 @@ function App() {
       showAlert("Light mode has been enabled", "success");
     }
   }
+
+  const selectColor = ()=>{
+    let color = document.getElementById('clr').value ;
+    document.body.style.backgroundColor = color;
+
+  }
+
   return (
     <>
     <Router>
-    <Navbar title="TextUtils" mode={mode} toggleMode={toggleMode} key={new Date()} />
+    <Navbar title="TextUtils" mode={mode} toggleMode={toggleMode} key={new Date()} selectColor = {selectColor}/>
     <Alert alert={alert}/>
     <div className="container my-3">
     <Switch>
