@@ -1,4 +1,6 @@
 {
+  "homepage": "https://anshul-132002
+  .github.io/TextUtils-React",
   "name": "textutils",
   "version": "0.1.0",
   "private": true,
@@ -8,7 +10,7 @@
     "@testing-library/user-event": "^12.8.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "^5.3.4",
     "react-scripts": "4.0.3",
     "web-vitals": "^1.1.2"
   },
