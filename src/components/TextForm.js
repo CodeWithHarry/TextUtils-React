@@ -3,20 +3,23 @@ import React, {useState} from 'react'
 
 export default function TextForm(props) {
     const handleUpClick = ()=>{
-        let newText = text.toUpperCase();
-        setText(newText)
+        // let newText = text.toUpperCase();
+        // setText(newText)
+        setText(text.toUpperCase());
         props.showAlert("Converted to uppercase!", "success");
     }
 
     const handleLoClick = ()=>{ 
-        let newText = text.toLowerCase();
-        setText(newText)
+        // let newText = text.toLowerCase();
+        // setText(newText)
+        setText(text.toLowerCase())
         props.showAlert("Converted to lowercase!", "success");
     }
 
     const handleClearClick = ()=>{ 
-        let newText = '';
-        setText(newText);
+        // let newText = '';
+        // setText(newText);
+        setText("")
         props.showAlert("Text Cleared!", "success");
     }
 
@@ -32,8 +35,9 @@ export default function TextForm(props) {
 
     // Credits: Coding Wala
     const handleExtraSpaces = () => {
-        let newText = text.split(/[ ]+/);
-        setText(newText.join(" "));
+        // let newText = text.split(/[ ]+/);
+        // setText(newText.join(" "));
+        setText(text.replace(/\s+/g, ' ').trim())
         props.showAlert("Extra spaces removed!", "success");
     }
 
