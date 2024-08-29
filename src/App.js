@@ -9,6 +9,7 @@ import {
   Switch,
   Route
 } from "react-router-dom";
+import "./css/homepage.css"
 
  
 function App() {
